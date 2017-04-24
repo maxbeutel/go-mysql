@@ -34,7 +34,7 @@ func (p *BinlogParser) Reset() {
 
 type OnEventFunc func(*BinlogEvent) error
 
-func (p *BinlogParser) ParseFile(name string, offset int64, onEvent OnEventFunc) error {
+func (p *BinlogParser) ParseFile(name string, onEvent OnEventFunc) error {
 	f, err := os.Open(name)
 	if err != nil {
 		return errors.Trace(err)
@@ -48,12 +48,8 @@ func (p *BinlogParser) ParseFile(name string, offset int64, onEvent OnEventFunc)
 		return errors.Errorf("%s is not a valid binlog file, head 4 bytes must fe'bin' ", name)
 	}
 
-	if offset < 4 {
-		offset = 4
-	}
-
-	if _, err = f.Seek(offset, os.SEEK_SET); err != nil {
-		return errors.Errorf("seek %s to %d error %v", name, offset, err)
+	if _, err = f.Seek(4, os.SEEK_SET); err != nil {
+		return errors.Errorf("seek %s to offset 4 to start parsing error %v", name, err)
 	}
 
 	return p.parseReader(f, onEvent)

@@ -8,7 +8,6 @@ import (
 )
 
 var name = flag.String("name", "", "binlog file name")
-var offset = flag.Int64("offset", 0, "parse start offset")
 
 func main() {
 	flag.Parse()
@@ -20,7 +19,7 @@ func main() {
 		return nil
 	}
 
-	err := p.ParseFile(*name, *offset, f)
+	err := p.ParseFile(*name, f)
 
 	if err != nil {
 		println(err)
